@@ -1,0 +1,24 @@
+{
+  "name": "Puretext - Secure Encrypted Notes",
+  "short_name": "Puretext",
+  "description": "Free secure note-taking app with military-grade AES-256 encryption. The best ProtectedText alternative.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "keywords": ["puretext", "protectedtext", "protectedtext alternative", "secure notes", "encrypted notes", "password protected notes", "zero knowledge encryption"]
+}
