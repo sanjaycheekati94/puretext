@@ -1,70 +1,62 @@
-import { NoteResponse, SaveNoteRequest, DeleteNoteRequest, EncryptedData } from '../types';
+const API_URL = import.meta.env.PROD 
+  ? 'https://puretext-k5fs2nzof-sanjays-projects-dabe619b.vercel.app/api'
+  : 'http://localhost:5000/api';
 
-const API_BASE = '/api';
+export interface EncryptedData {
+  version: number;
+  salt: string;
+  iv: string;
+  ciphertext: string;
+}
 
-/**
- * Fetch a note by name
- */
-export const fetchNote = async (noteName: string): Promise<NoteResponse> => {
-  const response = await fetch(`${API_BASE}/note/${encodeURIComponent(noteName)}`);
-  
+export interface NoteResponse {
+  exists: boolean;
+  data?: EncryptedData;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export const fetchNote = async (name: string): Promise<NoteResponse> => {
+  const response = await fetch(`${API_URL}/note/${name}`);
   if (!response.ok) {
     throw new Error('Failed to fetch note');
   }
-  
   return response.json();
 };
 
-/**
- * Save (create or update) a note
- */
 export const saveNote = async (
-  noteName: string,
+  name: string,
   data: EncryptedData,
   deleteTokenHash?: string
-): Promise<any> => {
-  const body: SaveNoteRequest = { data };
-  
+): Promise<void> => {
+  const body: any = { data };
   if (deleteTokenHash) {
     body.deleteTokenHash = deleteTokenHash;
   }
-  
-  const response = await fetch(`${API_BASE}/note/${encodeURIComponent(noteName)}`, {
+
+  const response = await fetch(`${API_URL}/note/${name}`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   });
-  
+
   if (!response.ok) {
     throw new Error('Failed to save note');
   }
-  
-  return response.json();
 };
 
-/**
- * Delete a note
- */
-export const deleteNote = async (
-  noteName: string,
-  deleteToken: string
-): Promise<any> => {
-  const body: DeleteNoteRequest = { deleteToken };
-  
-  const response = await fetch(`${API_BASE}/note/${encodeURIComponent(noteName)}`, {
+export const deleteNote = async (name: string, deleteToken: string): Promise<void> => {
+  const response = await fetch(`${API_URL}/note/${name}`, {
     method: 'DELETE',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify({ deleteToken }),
   });
-  
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Failed to delete note');
+    throw new Error('Failed to delete note');
   }
-  
-  return response.json();
 };
